@@ -8,6 +8,8 @@ const shopRoutes = require("./routes/shop");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use("/admin", adminRoutes); //'/admin' adds a prefix to all routes in the dminRoutes file, with that you can filtering paths
 app.use(shopRoutes);
 
