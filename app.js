@@ -3,9 +3,8 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-const adminRoutes = require('./routes/admin');
+const adminRoutes = require('./routes/admin'); 
 const shopRoutes = require('./routes/shop');
-const res = require('express/lib/response');
 
 app.use(bodyParser.urlencoded({extended: false}));
 
