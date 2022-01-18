@@ -1,4 +1,3 @@
-
 const fs = require('fs')
 
 const requestHandler = (req, res) => {
@@ -23,7 +22,7 @@ const requestHandler = (req, res) => {
           body.push(chunk); //listener will execute this code so often until it done getting all data
         });
         
-        req.on('end', () => {//listens when its done with getting data
+        return req.on('end', () => {//listens when its done with getting data
           const parsedBody = Buffer.concat(body).toString(); //Buffer obj is available globaly
           console.log(`parsedBody`, parsedBody) // message=hhgf,message because we named input field 'message' key=value pair 
           const message = parsedBody.split('=')[1]; //delete message=, take only value (hhgf in our case)
@@ -35,13 +34,13 @@ const requestHandler = (req, res) => {
           }); 
         });
       }
-    //   res.setHeader('Content-Type', 'text/html');
-    //   res.write('<html>');
-    //   res.write('<head><title>My First Page</title><head>');
-    //   res.write('<body><h1>Hello from my Node.js Server!</h1></body>');
-    //   res.write('</html>');
-    //   res.end();
+      res.setHeader('Content-Type', 'text/html');
+      res.write('<html>');
+      res.write('<head><title>My First Page</title><head>');
+      res.write('<body><h1>Hello from my Node.js Server!</h1></body>');
+      res.write('</html>');
+      res.end();
 
 }
 
-module.export = requestHandler
+module.exports = requestHandler
