@@ -2,7 +2,10 @@ const express = require("express");
 const path = require("path"); //path is a core module
 const router = express.Router();
 const rootDir = require("../utils/path");
-console.log(`rootDir`, rootDir);
+
+const adminData = require('./admin')
+console.log(`adminData.products`, adminData.products);
+
 
 router.get("/", (req, res, next) => {
   // res.send('<h1>Hello from Express</h1>')
