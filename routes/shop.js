@@ -10,6 +10,9 @@ router.get('/', shopController.getIndex);
 
 router.get('/products', shopController.getProducts);
 
+//name after semicolon can be any of your choice, it will look like /products/12354
+router.get('/products/:productId', shopController.getProduct)
+
 router.get('/cart', shopController.getCart);
 
 router.get('/orders', shopController.getOrders);
