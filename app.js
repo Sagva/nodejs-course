@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const app = express();
 
+app.set('view engine', 'pug')// we tell express that we want to compile dynamic templates with the pug engine
+app.set('views', 'views') // and where to find those templates
 const adminData = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 

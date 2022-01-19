@@ -8,11 +8,10 @@ console.log(`adminData.products`, adminData.products);
 
 
 router.get("/", (req, res, next) => {
-  // res.send('<h1>Hello from Express</h1>')
-  //instead of writing and sending html here we will send a html-file that we created before
-  // res.sendFile('/views/shop.html') we want to build a path like that
-  res.sendFile(path.join(rootDir, "views", "shop.html"));
-  //rootDir gives the absolute path to the project folder (in the operating system)
+  
+  //res.sendFile(path.join(rootDir, "views", "shop.html"));
+  // befole we sent a html file, now we are using templating engine Pug
+  res.render('shop') // to take the template where
 });
 
 module.exports = router;
