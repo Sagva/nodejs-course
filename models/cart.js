@@ -13,7 +13,7 @@ module.exports = class Cart {
     fs.readFile(p, (err, fileContent) => {
         let cart = {products: [], totalPrice: 0}
         if(!err) {// if where is no error that means that the cart file is already exist, we parse it and save in the variable cart
-            cart = JSON.parse(fileContent)
+            cart = JSON.parse(fileContent) // JSON {"products":[{"id":"15632","qty":1},{"id":"0.7012327409802948","qty":1}],"totalPrice":44.3}
         }
         //analyze the cart => find existing product
         const existingProductIndex = cart.products.findIndex(prod => prod.id === id)
