@@ -4,7 +4,7 @@ exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
-    
+    editing: false
   });
 };
 
@@ -24,12 +24,18 @@ exports.getEditProduct = (req, res, next) => {
   if(!editMode) { //if '?edit=true' will not found among querys, editMode will be sett as undefined 
     return res.redirect('/')
   }
-  
-  res.render('admin/edit-product', {
-    pageTitle: 'Edit Product',
-    path: '/admin/edit-product',
-    editing: editMode
-  });
+  const prodId = req.params.productId // here we can access productId from url because we have the dynamic segment 'productId' in the router: router.get('/edit-product/:productId', adminController.getEditProduct)
+  Product.findById(prodId, product => {
+    if(!product) {
+      return res.redirect('/') //for now we will redirect to mane page if there is no product, later we'll add error message
+    }
+    res.render('admin/edit-product', { 
+      pageTitle: 'Edit Product',
+      path: '/admin/edit-product',
+      editing: editMode,
+      product: product //if the product was found, we pat it in the object and render on the page at route admin/edit-product'
+    });
+  })
 };
 
 exports.getProducts = (req, res, next) => {
