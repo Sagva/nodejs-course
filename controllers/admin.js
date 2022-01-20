@@ -1,12 +1,10 @@
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
-  res.render('admin/add-product', {
+  res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
-    formsCSS: true,
-    productCSS: true,
-    activeAddProduct: true
+    
   });
 };
 
@@ -18,6 +16,20 @@ exports.postAddProduct = (req, res, next) => {
   const product = new Product(title, imageUrl, description, price);
   product.save();
   res.redirect('/');
+};
+
+exports.getEditProduct = (req, res, next) => {
+  const editMode = req.query.edit //by trying to access a key edit we can check if it exists, the extracted value is always a string, so it will be "true" instead of true
+  console.log(`editMode`, editMode) // need to add to url '?edit=true' as http://localhost:3000/admin/edit-product/15632?edit=true
+  if(!editMode) { //if '?edit=true' will not found among querys, editMode will be sett as undefined 
+    return res.redirect('/')
+  }
+  
+  res.render('admin/edit-product', {
+    pageTitle: 'Edit Product',
+    path: '/admin/edit-product',
+    editing: editMode
+  });
 };
 
 exports.getProducts = (req, res, next) => {
