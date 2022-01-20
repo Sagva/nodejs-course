@@ -18,7 +18,8 @@ const getProductsFromFile = cb => {
 };
 
 module.exports = class Product {
-  constructor(title, imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
@@ -27,12 +28,23 @@ module.exports = class Product {
   }
 
   save() {
-      this.id = Math.random().toString()
     getProductsFromFile(products => {
-      products.push(this);
-      fs.writeFile(p, JSON.stringify(products), err => {
-        console.log(err);
-      });
+      if(this.id) {//if there is an id that means that the product as alfready exist, and we use that function for saving the product after editing
+        const existingProductIndex = products.findIndex(prod => prod.id === this.id) //find en index of the product we want to edit
+        const updatedProducts = [...products] // creating an updated products array. We use the spread operator to pull out all the existing product elements and store them in a new array
+        updatedProducts[existingProductIndex] = this //replacing the product with existingProductIndex with this. This inside this class is updated product.
+
+        fs.writeFile(p, JSON.stringify(updatedProducts), err => {
+          console.log(err);
+        });
+      } else {
+        this.id = Math.random().toString() //for brand new products (not when editing existing) we cteate a new id
+        products.push(this);
+        fs.writeFile(p, JSON.stringify(products), err => {
+          console.log(err);
+        });
+      }
+     
     });
   }
 

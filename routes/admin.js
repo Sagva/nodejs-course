@@ -16,5 +16,6 @@ router.get('/products', adminController.getProducts);
 router.post('/add-product', adminController.postAddProduct);
 
 router.get('/edit-product/:productId', adminController.getEditProduct)
+router.post('/edit-product/', adminController.postEditProduct) //for post requests data can be enclosed in the request we are sending, that's why we dont need dynamic segment here (/:productid) 
 
 module.exports = router;

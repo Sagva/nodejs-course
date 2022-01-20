@@ -13,7 +13,7 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(title, imageUrl, description, price);
+  const product = new Product(null, title, imageUrl, description, price);// when creating a product first time we pass null as a prodect id, in the function save() in the Product class the proper id will be added
   product.save();
   res.redirect('/');
 };
@@ -36,7 +36,22 @@ exports.getEditProduct = (req, res, next) => {
       product: product //if the product was found, we pat it in the object and render on the page at route admin/edit-product'
     });
   })
-};
+}
+exports.postEditProduct = (req, res, next) => {// here we want to constract a new product and replace the existing one with this product. It requires work on Product module, in save we'll check if we already have an id
+
+  // fetch information for the product
+  const prodId = req.body.productId //these keys must match names in the inputs fields at edit product view
+  const updatedTitle = req.body.title
+  const updatedPrice = req.body.price
+  const updatedImageUrl = req.body.imageUrl
+  const updatedDescription = req.body.description
+  //create a new product instance, populate it with the information
+const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice ) //same order as they go in the constructor(id, title, imageUrl, description, price) 
+
+  //then to call save.
+  updatedProduct.save()
+  res.redirect('/admin/products')
+}
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll(products => {
