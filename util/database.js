@@ -1,10 +1,9 @@
-const mysql = require('mysql2') //import the package, before that we did  npm install --save mysql2  
+const Sequelize = require('sequelize')
 
-const pool = mysql.createPool({ //create a pool of connections passing an object with information about the DB we are connecting to
-    host: 'localhost', //server or ip-address
-    user: 'root',
-    database: 'node-complete', //exact data base name, that we specified when we created a DB
-    password: 'NODE123456'  // password to connect with DB, also specified durying creating of DB
-});
+const sequelize = new Sequelize('node-complete', 'root', 'NODE123456', {
+    dialect: 'mysql',
+    host: 'localhost'
+})
 
-module.exports = pool.promise()
+module.exports = sequelize //  sequelize is an object which is essentially the database connection pool,
+//but managed by sequelize that is giving us a lot of useful features
