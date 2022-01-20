@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error')
 
-const db = require('./util/database') //this is the pool which allows us to use a connection in it
+const sequelize = require('./util/database')
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -14,11 +15,6 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
-// db.execute('SELECT * FROM products')
-//     .then((result)=>{
-//         console.log(`result`, result[0], result[1] )
-//     })
-//     .catch()
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -28,4 +24,13 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(3000);
+sequelize.sync() //sync method has a look at all the models you defined (we defined the model in './util/database')
+//and then it creates tables for them. It syncs our modals to the database by creating the appropriate tables and relations (if you have them)
+.then(result => {
+    // console.log(`result`, result)
+    app.listen(3000);
+})
+.catch(err => console.log(err)) 
+
+
+
