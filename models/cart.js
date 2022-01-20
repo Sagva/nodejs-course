@@ -9,8 +9,8 @@ const p = path.join(
 
 module.exports = class Cart {
     static addProduct(id, productPrice) {
-    //fetch the previous cart
-    fs.readFile(p, (err, fileContent) => {
+        //fetch the previous cart
+        fs.readFile(p, (err, fileContent) => {
         let cart = {products: [], totalPrice: 0}
         if(!err) {// if where is no error that means that the cart file is already exist, we parse it and save in the variable cart
             cart = JSON.parse(fileContent) // JSON {"products":[{"id":"15632","qty":1},{"id":"0.7012327409802948","qty":1}],"totalPrice":44.3}
@@ -36,4 +36,24 @@ module.exports = class Cart {
         })
     })
     }
+
+    static deleteProduct(id, productPrice) {
+        fs.readFile(p, (err, fileContent) => {
+          if (err) { //we didn't find a cart, so there is nothing to delete
+            return
+          }
+          const updatedCart = { ...JSON.parse(fileContent) }; //take 
+          const product = updatedCart.products.find(prod => prod.id === id)
+          const productQty = product.qty //qty = quantity
+          updatedCart.products = updatedCart.products.filter(
+            prod => prod.id !== id
+          );
+          updatedCart.totalPrice =
+            updatedCart.totalPrice - productPrice * productQty // substruct price from totalPrice as many times as the amount of product in the cart
+    
+          fs.writeFile(p, JSON.stringify(updatedCart), err => {
+            console.log(err)
+          })
+        })
+      }
 }
