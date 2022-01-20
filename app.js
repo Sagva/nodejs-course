@@ -4,6 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error')
+
+const db = require('./util/database') //this is the pool which allows us to use a connection in it
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -11,6 +13,12 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+
+db.execute('SELECT * FROM products')
+    .then((result)=>{
+        console.log(`result`, result )
+    })
+    .catch()
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
