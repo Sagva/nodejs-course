@@ -14,8 +14,12 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product(null, title, imageUrl, description, price);// when creating a product first time we pass null as a prodect id, in the function save() in the Product class the proper id will be added
-  product.save();
-  res.redirect('/');
+  product.save()
+  .then(()=> {
+    res.redirect('/');
+
+  })
+  .catch((err) => console.log(err))
 };
 
 exports.getEditProduct = (req, res, next) => {

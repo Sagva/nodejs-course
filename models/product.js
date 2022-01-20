@@ -13,6 +13,11 @@ module.exports = class Product {
   }
 
   save() {
+    return db.execute(
+      // question marks used to secure inserting of data, Packsge mysql2 will secure replace them with data
+      'INSERT INTO products (title, price, description, imageUrl) VALUES (?, ?, ?, ?)',
+      [this.title, this.price, this.description, this.imageUrl]
+    )
     
   }
 
