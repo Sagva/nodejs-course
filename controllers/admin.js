@@ -43,7 +43,11 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/')
   }
   const prodId = req.params.productId // here we can access productId from url because we have the dynamic segment 'productId' in the router: router.get('/edit-product/:productId', adminController.getEditProduct)
-  Product.findById(prodId, product => {
+  
+  // Product.findById(prodId)
+  req.user.getProducts({where: {id: prodId}}) // will give us an array with one object in it
+  .then(products => {
+    const product = products[0]
     if(!product) {
       return res.redirect('/') //for now we will redirect to mane page if there is no product, later we'll add error message
     }
@@ -72,7 +76,9 @@ const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, update
 }
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll().then((products => {
+  req.user.getProducts()
+  // Product.findAll()
+  .then((products => {
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
