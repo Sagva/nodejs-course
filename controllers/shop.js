@@ -67,7 +67,7 @@ exports.postCart = (req, res, next) => {
     })
     .then(products => { 
       let product
-      if (products.length > 0) { //if array several element, then we need to increase quantaty
+      if (products.length > 0) { //if array several element, then we need to increase quantity
         product = products[0]
       }
 
@@ -76,7 +76,7 @@ exports.postCart = (req, res, next) => {
         newQuantity = oldQuantity + 1
         return product
       }
-      return Product.findById(prodId)
+      return Product.findByPk(prodId)
     })
     .then(product => {
       return fetchedCart.addProduct(product, {
