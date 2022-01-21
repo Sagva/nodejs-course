@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 const errorController = require('./controllers/error')
 
 const sequelize = require('./util/database')
-
+const Product = require('./models/product')
+const User = require('./models/user')
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -24,7 +25,11 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-sequelize.sync() //sync method has a look at all the models you defined (we defined the model in './util/database')
+
+Product.belongsTo(User, {constraints: true, onDelete: 'CASCADE'})
+User.hasMany(Product)
+
+sequelize.sync({force: true}) //sync method has a look at all the models you defined (we defined the model in './util/database')
 //and then it creates tables for them. It syncs our modals to the database by creating the appropriate tables and relations (if you have them)
 .then(result => {
     // console.log(`result`, result)
