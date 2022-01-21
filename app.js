@@ -55,7 +55,7 @@ User.hasMany(Order) //one-to-many relationship
 
 Order.belongsToMany(Product, {through: OrderItem})
 
-// sequelize.sync({force: true}) //{force: true} will overwrite tables every time the app starts
+//  sequelize.sync({force: true}) //{force: true} will overwrite tables every time the app starts
 sequelize.sync() //runs on the app start
     .then(result => {
         // console.log(`result`, result)

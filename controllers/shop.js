@@ -134,7 +134,7 @@ exports.postOrder = (req, res, next) => {
         .catch(err => console.log(err));
     })
     .then(result => {
-      return fetchedCart.setProducts(null);
+      return fetchedCart.setProducts(null); // resettine the cart
     })
     .then(result => {
       res.redirect('/orders');
@@ -142,9 +142,22 @@ exports.postOrder = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
-exports.getCheckout = (req, res, next) => {
-  res.render("shop/checkout", {
-    path: "/checkout",
-    pageTitle: "Checkout",
-  });
+// exports.getCheckout = (req, res, next) => {
+//   res.render("shop/checkout", {
+//     path: "/checkout",
+//     pageTitle: "Checkout",
+//   });
+// };
+
+exports.getOrders = (req, res, next) => {
+  req.user
+    .getOrders({include: ['products']}) //fetch all related products, it works because we set Order.belongsToMany(Product, {through: OrderItem})
+    .then(orders => {
+      res.render('shop/orders', {
+        path: '/orders',
+        pageTitle: 'Your Orders',
+        orders: orders
+      });
+    })
+    .catch(err => console.log(err));
 };
