@@ -48,23 +48,26 @@ Cart.belongsTo(User)
 Cart.belongsToMany(Product, {through: CartItem})
 Product.belongsToMany(Cart, {through: CartItem})
 
-sequelize.sync({force: true}) //{force: true} will overwrite tables every time the app starts
-// sequelize.sync() //runs on the app start
-.then(result => {
-    // console.log(`result`, result)
-    return User.findByPk(1) //check if we already have a user with id = 1 and if we have it we will not create a new one. If we don't have then we will create a new one
-})
-.then(user => {
-    if(!user) {// if this is null, create a new user
-        return User.create({name: 'Elena', email: 'test@test.com'}) //return a promise
-    }
-    return user //if user exist return it. Returns an js object
-})
-.then(user => {
-    console.log(`user`, user)
-    app.listen(3000);
-})
-.catch(err => console.log(err)) 
+// sequelize.sync({force: true}) //{force: true} will overwrite tables every time the app starts
+sequelize.sync() //runs on the app start
+    .then(result => {
+        // console.log(`result`, result)
+        return User.findByPk(1) //check if we already have a user with id = 1 and if we have it we will not create a new one. If we don't have then we will create a new one
+    })
+    .then(user => {
+        if(!user) {// if this is null, create a new user
+            return User.create({name: 'Elena', email: 'test@test.com'}) //return a promise
+        }
+        return user //if user exist return it. Returns an js object
+    })
+    .then(user => {
+        console.log(`user`, user)
+        return user.createCart()
+    })
+    .then(cart => {
+        app.listen(3000);
+    })
+    .catch(err => console.log(err)) 
 
 
 
