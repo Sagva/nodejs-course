@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //will run on incoming request, so the user will be already exist, because we create it on starting the app (not on incoming request)
 app.use((req,res, next) => {
     User.findByPk(1)
-    .then(user => {//user here is a sequelize object with all available methods
+    .then(user => {//user here is a sequelize object with all available methods (e.g. createProduct)
         req.user = user //storing th user we retrieved fron DB in the request
         next()
     })
