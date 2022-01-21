@@ -53,7 +53,7 @@ Product.belongsToMany(Cart, {through: CartItem})
 Order.belongsTo(User) //one-to-one relationship
 User.hasMany(Order) //one-to-many relationship
 
-Order.belongssToMany(Product, {through: OrderItem})
+Order.belongsToMany(Product, {through: OrderItem})
 
 // sequelize.sync({force: true}) //{force: true} will overwrite tables every time the app starts
 sequelize.sync() //runs on the app start
