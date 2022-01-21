@@ -23,6 +23,7 @@ exports.postAddProduct = (req, res, next) => {
   .then(result => {
     // console.log(`result`, result)
     console.log(`Created product`)
+    res.redirect('/admin/products')
   })
   .catch(err => console.log(err))
 };
@@ -63,17 +64,26 @@ const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, update
 }
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
+  Product.findAll().then((products => {
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
       path: '/admin/products'
     });
-  });
+  })).catch()
+  
+  
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId);
-  res.redirect('/admin/products');
+  Product.findByPk(prodId)
+  .then(product => {
+    product.destroy()
+  })
+  .then(result => {
+    console.log(`Product was deleted`)
+    res.redirect('/admin/products');
+  })
+  .catch(err => console.log(err))
 };
