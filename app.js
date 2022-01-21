@@ -6,8 +6,12 @@ const bodyParser = require('body-parser');
 const errorController = require('./controllers/error')
 
 const sequelize = require('./util/database')
+
 const Product = require('./models/product')
 const User = require('./models/user')
+const Cart = require('./models/cart')
+const CartItem = require('./models/cart-item')
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -38,9 +42,14 @@ app.use(errorController.get404);
 
 Product.belongsTo(User, {constraints: true, onDelete: 'CASCADE'})
 User.hasMany(Product)
+User.hasOne(Cart) //will add a key to the cart (user Id)
+Cart.belongsTo(User)
 
-// sequelize.sync({force: true}) //{force: true} will overwrite tables every time the app starts
-sequelize.sync() //runs on the app start
+Cart.belongsToMany(Product, {through: CartItem})
+Product.belongsToMany(Cart, {through: CartItem})
+
+sequelize.sync({force: true}) //{force: true} will overwrite tables every time the app starts
+// sequelize.sync() //runs on the app start
 .then(result => {
     // console.log(`result`, result)
     return User.findByPk(1) //check if we already have a user with id = 1 and if we have it we will not create a new one. If we don't have then we will create a new one
