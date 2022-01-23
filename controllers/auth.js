@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 exports.getLogin = (req, res, next) => {
@@ -30,6 +31,7 @@ exports.postLogin = (req, res, next) => {
 };
 
 exports.postSignup = (req, res, next) => {
+  console.log(`email`, req.body.email);
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -38,9 +40,12 @@ exports.postSignup = (req, res, next) => {
       if (userDoc) {
         return res.redirect("/signup");
       }
+      return bcrypt.hash(password, 12); //the hash method as first parameter takes the string which you want to encrypt (pssword). THe second paramenter is the salt value (haw many rounds of hashing will be applied). Async tass, gives back a promise
+    })
+    .then((hashedPassword) => {
       const user = new User({
         email: email,
-        password: password,
+        password: hashedPassword,
         cart: { items: [] },
       });
       return user.save();
