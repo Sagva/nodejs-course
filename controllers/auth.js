@@ -40,19 +40,21 @@ exports.postSignup = (req, res, next) => {
       if (userDoc) {
         return res.redirect("/signup");
       }
-      return bcrypt.hash(password, 12); //the hash method as first parameter takes the string which you want to encrypt (pssword). THe second paramenter is the salt value (haw many rounds of hashing will be applied). Async tass, gives back a promise
+      return bcrypt
+        .hash(password, 12) //the hash method as first parameter takes the string which you want to encrypt (pssword). THe second paramenter is the salt value (haw many rounds of hashing will be applied). Async tass, gives back a promise
+        .then((hashedPassword) => {
+          const user = new User({
+            email: email,
+            password: hashedPassword,
+            cart: { items: [] },
+          });
+          return user.save();
+        })
+        .then((result) => {
+          res.redirect("/login");
+        });
     })
-    .then((hashedPassword) => {
-      const user = new User({
-        email: email,
-        password: hashedPassword,
-        cart: { items: [] },
-      });
-      return user.save();
-    })
-    .then((result) => {
-      res.redirect("/login");
-    })
+
     .catch((err) => {
       console.log(err);
     });
