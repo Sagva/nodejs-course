@@ -4,7 +4,8 @@ exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
-    editing: false
+    editing: false,
+    isAuthenticated: req.isLoggedIn
   });
 };
 
@@ -13,91 +14,91 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(null, title, imageUrl, description, price);// when creating a product first time we pass null as a prodect id, in the function save() in the Product class the proper id will be added
-  // Product.create({
-  //   title: title,
-  //   price: price,
-  //   imageUrl: imageUrl,
-  //   description: description,
-  //   userId: req.user.id
-  // })
-  req.user.createProduct({
-      title: title,
-      price: price,
-      imageUrl: imageUrl,
-      description: description,
-      userId: req.user.id
+  const product = new Product({
+    title: title,
+    price: price,
+    description: description,
+    imageUrl: imageUrl,
+    userId: req.user
+  });
+  product
+    .save()
+    .then(result => {
+      // console.log(result);
+      console.log('Created Product');
+      res.redirect('/admin/products');
     })
-  .then(result => {
-    // console.log(`result`, result)
-    console.log(`Created product`)
-    res.redirect('/admin/products')
-  })
-  .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
-  const editMode = req.query.edit //by trying to access a key edit we can check if it exists, the extracted value is always a string, so it will be "true" instead of true
-  console.log(`editMode`, editMode) // need to add to url '?edit=true' as http://localhost:3000/admin/edit-product/15632?edit=true
-  if(!editMode) { //if '?edit=true' will not found among querys, editMode will be sett as undefined 
-    return res.redirect('/')
+  const editMode = req.query.edit;
+  if (!editMode) {
+    return res.redirect('/');
   }
-  const prodId = req.params.productId // here we can access productId from url because we have the dynamic segment 'productId' in the router: router.get('/edit-product/:productId', adminController.getEditProduct)
-  
-  // Product.findById(prodId)
-  req.user.getProducts({where: {id: prodId}}) // will give us an array with one object in it
-  .then(products => {
-    const product = products[0]
-    if(!product) {
-      return res.redirect('/') //for now we will redirect to mane page if there is no product, later we'll add error message
-    }
-    res.render('admin/edit-product', { 
-      pageTitle: 'Edit Product',
-      path: '/admin/edit-product',
-      editing: editMode,
-      product: product //if the product was found, we pat it in the object and render on the page at route admin/edit-product'
-    });
-  })
-}
-exports.postEditProduct = (req, res, next) => {// here we want to constract a new product and replace the existing one with this product. It requires work on Product module, in save we'll check if we already have an id
+  const prodId = req.params.productId;
+  Product.findByPk(prodId)
+    .then(product => {
+      if (!product) {
+        return res.redirect('/');
+      }
+      res.render('admin/edit-product', {
+        pageTitle: 'Edit Product',
+        path: '/admin/edit-product',
+        editing: editMode,
+        product: product,
+        isAuthenticated: req.isLoggedIn
+      });
+    })
+    .catch(err => console.log(err));
+};
 
-  // fetch information for the product
-  const prodId = req.body.productId //these keys must match names in the inputs fields at edit product view
-  const updatedTitle = req.body.title
-  const updatedPrice = req.body.price
-  const updatedImageUrl = req.body.imageUrl
-  const updatedDescription = req.body.description
-  //create a new product instance, populate it with the information
-const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice ) //same order as they go in the constructor(id, title, imageUrl, description, price) 
+exports.postEditProduct = (req, res, next) => {
+  const prodId = req.body.productId;
+  const updatedTitle = req.body.title;
+  const updatedPrice = req.body.price;
+  const updatedImageUrl = req.body.imageUrl;
+  const updatedDesc = req.body.description;
 
-  //then to call save.
-  updatedProduct.save()
-  res.redirect('/admin/products')
-}
+  Product.findByPk(prodId)
+    .then(product => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.description = updatedDesc;
+      product.imageUrl = updatedImageUrl;
+      return product.save();
+    })
+    .then(result => {
+      console.log('UPDATED PRODUCT!');
+      res.redirect('/admin/products');
+    })
+    .catch(err => console.log(err));
+};
 
 exports.getProducts = (req, res, next) => {
-  req.user.getProducts()
-  // Product.findAll()
-  .then((products => {
-    res.render('admin/products', {
-      prods: products,
-      pageTitle: 'Admin Products',
-      path: '/admin/products'
-    });
-  })).catch()
-  
-  
+  Product.find()
+    // .select('title price -_id')
+    // .populate('userId', 'name')
+    .then(products => {
+      console.log(products);
+      res.render('admin/products', {
+        prods: products,
+        pageTitle: 'Admin Products',
+        path: '/admin/products',
+        isAuthenticated: req.isLoggedIn
+      });
+    })
+    .catch(err => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findByPk(prodId)
-  .then(product => {
-    product.destroy()
-  })
-  .then(result => {
-    console.log(`Product was deleted`)
-    res.redirect('/admin/products');
-  })
-  .catch(err => console.log(err))
+  Product.findByIdAndRemove(prodId)
+    .then(() => {
+      console.log('DESTROYED PRODUCT');
+      res.redirect('/admin/products');
+    })
+    .catch(err => console.log(err));
 };
