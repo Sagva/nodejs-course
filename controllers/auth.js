@@ -1,6 +1,14 @@
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer')
+const sendGridTransport = require('nodemailer-sendgrid-transport')
 
 const User = require('../models/user');
+
+const transporter = nodemailer.createTransport(sendGridTransport ({
+  auth: {
+    api_key: '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'
+  }
+}))
 
 exports.getLogin = (req, res, next) => {
   let message = req.flash('error');
@@ -83,7 +91,14 @@ exports.postSignup = (req, res, next) => {
         })
         .then(result => {
           res.redirect('/login');
-        });
+          return transporter.sendMail({
+              to: email,
+              from: 'sagva2014@gmail.com',
+              subject: 'Sighup succeeded!',
+              html: '<h1>You successfuly sighed up!</h1>'
+          })
+        })
+        .catch(err => console.log(err))
     })
     .catch(err => {
       console.log(err);
