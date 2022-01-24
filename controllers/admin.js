@@ -13,6 +13,7 @@ exports.getAddProduct = (req, res, next) => {
   });
 };
 exports.postAddProduct = (req, res, next) => {
+  console.log(`req`, req);
   const title = req.body.title;
   const imageUrl = req.file;
   console.log(`imageUrl`, imageUrl);
