@@ -32,6 +32,15 @@ app.use(flash()); // registring middleware. Now we can use it in any place of th
 // Catch errors
 store.on("error", (error) => console.log(error));
 
+const fileStorage = multer.diskStorage({
+  destination: (req, res, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  },
+});
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -40,7 +49,7 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ dest: "images" }).single("image")); //'image' is a name of input field type='file'
+app.use(multer({ storage: fileStorage }).single("image")); //'image' is a name of input field type='file'
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
