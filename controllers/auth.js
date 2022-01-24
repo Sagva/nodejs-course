@@ -37,13 +37,28 @@ exports.getSignup = (req, res, next) => {
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'Signup',
-    errorMessage: message
+    errorMessage: message,
+    oldInput: {
+      email: '',
+      password: '',
+      confirmPassword: ''
+    },
+    validationErrors: []
+
   });
 };
 
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  const errors = validationResult(req)
+  if(!errors.isEmpty()){
+    return res.status(422).render('auth/login', {
+      path: '/login',
+      pageTitle: 'Login',
+      errorMessage: errors.array()[0].msg // msg: 'Invalid value' by default. Msg can be set eith method 'withMessage'
+    })
+  }
   User.findOne({ email: email })
     .then(user => {
       if (!user) {
@@ -81,7 +96,9 @@ exports.postSignup = (req, res, next) => {
     return res.status(422).render('auth/signup', {
       path: '/signup',
       pageTitle: 'Signup',
-      errorMessage: errors.array()[0].msg // msg: 'Invalid value' by default. Msg can be set eith method 'withMessage'
+      errorMessage: errors.array()[0].msg, // msg: 'Invalid value' by default. Msg can be set eith method 'withMessage'
+      oldInput: {email: email, password: password, confirmedPassword: req.body.confirmPassword},
+      validationErrors: errors.array()
     })
   }
    bcrypt
