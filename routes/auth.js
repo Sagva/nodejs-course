@@ -25,7 +25,14 @@ router.post('/signup',
     'password', //will look up for password field in the body
     'Please enter a password with only numbers and text and at least 5 charachters') // error message, instead using withMessage method
     .isLength({min: 5})
-    .isAlphanumeric()// without special charachters
+    .isAlphanumeric(),// without special charachters
+
+    body('confirmPassword').custom((value, {req}) => {
+        if(value !== req.body.password) {
+            throw new Error('Passwords have to match!')
+        }
+        return true
+    })
     ],
         authController.postSignup);//email is a name if input field that we want to check
 //validaton result will be avalable in the auth-controller by exporting there 
