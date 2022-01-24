@@ -1,5 +1,5 @@
 const express = require('express');
-const {check} = require('express-validator/check')
+const {check, body} = require('express-validator/check')
 
 const authController = require('../controllers/auth');
 
@@ -12,7 +12,7 @@ router.get('/signup', authController.getSignup);
 router.post('/login', authController.postLogin);
 
 router.post('/signup', 
-    check('email')
+    [check('email') //this email we would extract that email from the cookies, the headers,body so anywhere 
         .isEmail()
         .withMessage('Please enter a valid email ')
         .custom((value, {req}) => {
@@ -21,6 +21,12 @@ router.post('/signup',
             }
             return true
         }),
+    body(
+    'password', //will look up for password field in the body
+    'Please enter a password with only numbers and text and at least 5 charachters') // error message, instead using withMessage method
+    .isLength({min: 5})
+    .isAlphanumeric()// without special charachters
+    ],
         authController.postSignup);//email is a name if input field that we want to check
 //validaton result will be avalable in the auth-controller by exporting there 
 
