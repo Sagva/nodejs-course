@@ -8,8 +8,8 @@ const mailgun = {
     domain: "sandboxbda1b86d22e14501bf65cae0456442c1.mailgun.org",
   }, 
 };
-const User = require('../models/user');
-const user = require('../models/user');
+const {validationResult} = require('express-validator/check')
+const User = require('../models/user')
 
 const mailgunTransport = nodemailer.createTransport(transport(mailgun));
 
@@ -76,6 +76,15 @@ exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
+  const errors = validationResult(req)
+  if(!errors.isEmpty()){
+    console.log(`errors.array()`, errors.array())
+    return res.status(422).render('auth/signup', {
+      path: '/signup',
+      pageTitle: 'Signup',
+      errorMessage: errors.array()[0].msg // msg: 'Invalid value' by default. Msg can be set eith method 'withMessage'
+    })
+  }
   User.findOne({ email: email })
     .then(userDoc => {
       if (userDoc) {
