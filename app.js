@@ -56,11 +56,18 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then((user) => {
+      if(!user) { //in this case we will not save undefined object 
+        next()
+      }
       console.log(`user`, user);
       req.user = user;
       next();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {//catch block will not fire the user with this ID will not be found
+      //it will only fire if there are any technical issues: if the database is down or if the user of this app does not have permissions to execute this action.
+     
+      throw new Error(err)
+    }); 
 });
 
 app.use((req, res, next) => { //for every reques that is executed these two firlds will be set for the views that are rendered
