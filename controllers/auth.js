@@ -1,14 +1,15 @@
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer')
-const sendGridTransport = require('nodemailer-sendgrid-transport')
-
+const transport = require("nodemailer-mailgun-transport")
+const mailgun = {   
+  auth: {  
+    api_key: "d16f4b4515087dd3e80c9e4fbdd7b25a-054ba6b6-4ff3e7d2",
+    domain: "sandboxbda1b86d22e14501bf65cae0456442c1.mailgun.org",
+  }, 
+};
 const User = require('../models/user');
 
-const transporter = nodemailer.createTransport(sendGridTransport ({
-  auth: {
-    api_key: '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'
-  }
-}))
+const mailgunTransport = nodemailer.createTransport(transport(mailgun));
 
 exports.getLogin = (req, res, next) => {
   let message = req.flash('error');
@@ -91,12 +92,13 @@ exports.postSignup = (req, res, next) => {
         })
         .then(result => {
           res.redirect('/login');
-          return transporter.sendMail({
-              to: email,
-              from: 'sagva2014@gmail.com',
-              subject: 'Sighup succeeded!',
-              html: '<h1>You successfuly sighed up!</h1>'
-          })
+          return mailgunTransport.sendMail({
+            to: email,
+            from: 'sagva2014@gmail.com',
+            subject: 'Sighup succeeded!',
+            html: '<h1>You successfuly sighed up!</h1>'
+        });
+          
         })
         .catch(err => console.log(err))
     })
