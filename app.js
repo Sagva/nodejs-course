@@ -84,6 +84,14 @@ app.get('/500', errorController.get500)
 
 app.use(errorController.get404);
 
+app.use((error, req, res, next) => { //Express knows a middleware with four arguments, a 
+  //so-called error handling middleware and there, the first argument will be the error followed by the other three arguments.
+  // express detects that this is a special kind of middleware and it will move right away
+  // to these error handling middlewares when you call next with an error passed to it, so it will then
+  // skip all the other middlewares and move to that
+  res.redirect('/500')
+})
+
 mongoose 
   .connect(MONGODB_URI)
   .then(result => {
