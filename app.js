@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require('csurf')
+const flash = require("connect-flash")
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -25,6 +26,7 @@ const store = new MongoDBStore(
 );
 
 const csrfProtection = csrf() //csrfProtection middleware, uses after we initialized the session
+app.use(flash())// registring middleware. Now we can use it in any place of the app
 
 // Catch errors
 store.on("error", (error) => console.log(error));
