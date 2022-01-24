@@ -5,8 +5,9 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
-const csrf = require('csurf')
-const flash = require("connect-flash")
+const csrf = require("csurf");
+const flash = require("connect-flash");
+const multer = require("multer");
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -25,8 +26,8 @@ const store = new MongoDBStore(
   (error) => console.log(error)
 );
 
-const csrfProtection = csrf() //csrfProtection middleware, uses after we initialized the session
-app.use(flash())// registring middleware. Now we can use it in any place of the app
+const csrfProtection = csrf(); //csrfProtection middleware, uses after we initialized the session
+app.use(flash()); // registring middleware. Now we can use it in any place of the app
 
 // Catch errors
 store.on("error", (error) => console.log(error));
@@ -39,6 +40,7 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ dest: "images" }).single("image")); //'image' is a name of input field type='file'
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
@@ -48,7 +50,7 @@ app.use(
     store: store,
   })
 );
-app.use(csrfProtection)
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -56,47 +58,51 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then((user) => {
-      if(!user) { //in this case we will not save undefined object 
-        next()
+      if (!user) {
+        //in this case we will not save undefined object
+        next();
       }
-      console.log(`user`, user);
+      // console.log(`user`, user);
       req.user = user;
       next();
     })
-    .catch((err) => {//catch block will not fire the user with this ID will not be found
+    .catch((err) => {
+      //catch block will not fire the user with this ID will not be found
       //it will only fire if there are any technical issues: if the database is down or if the user of this app does not have permissions to execute this action.
-     
-      throw new Error(err)
-    }); 
+
+      throw new Error(err);
+    });
 });
 
-app.use((req, res, next) => { //for every reques that is executed these two firlds will be set for the views that are rendered
-  res.locals.isAuthenticated = req.session.isLoggedIn,
-  res.locals.csrfToken = req.csrfToken()
-  next()
-})
+app.use((req, res, next) => {
+  //for every reques that is executed these two firlds will be set for the views that are rendered
+  (res.locals.isAuthenticated = req.session.isLoggedIn),
+    (res.locals.csrfToken = req.csrfToken());
+  next();
+});
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
-app.get('/500', errorController.get500)
+app.get("/500", errorController.get500);
 
 app.use(errorController.get404);
 
-app.use((error, req, res, next) => { //Express knows a middleware with four arguments, a 
+app.use((error, req, res, next) => {
+  //Express knows a middleware with four arguments, a
   //so-called error handling middleware and there, the first argument will be the error followed by the other three arguments.
   // express detects that this is a special kind of middleware and it will move right away
   // to these error handling middlewares when you call next with an error passed to it, so it will then
   // skip all the other middlewares and move to that
-  res.redirect('/500')
-})
+  res.redirect("/500");
+});
 
-mongoose 
+mongoose
   .connect(MONGODB_URI)
-  .then(result => {
+  .then((result) => {
     app.listen(3000);
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(err);
   });
