@@ -9,6 +9,7 @@ const mailgun = {
   }, 
 };
 const User = require('../models/user');
+const user = require('../models/user');
 
 const mailgunTransport = nodemailer.createTransport(transport(mailgun));
 
@@ -149,7 +150,7 @@ exports.postReset = (req, res, next) => {
         res.redirect('/');
         transporter.sendMail({
           to: req.body.email,
-          from: 'shop@node-complete.com',
+          from: 'sagva2014@gmail.com',
           subject: 'Password reset',
           html: `
             <p>You requested a password reset</p>
@@ -161,4 +162,54 @@ exports.postReset = (req, res, next) => {
         console.log(err);
       });
   });
+};
+
+exports.getNewPassword = (req, res, next) => {
+  const token = req.params.token; //in router we are expecting param 'token' '/reset/:token'
+  User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })//$gt = grate then
+    .then(user => {
+      let message = req.flash('error');
+      if (message.length > 0) {
+        message = message[0];
+      } else {
+        message = null;
+      }
+      res.render('auth/new-password', {
+        path: '/new-password',
+        pageTitle: 'New Password',
+        errorMessage: message,
+        userId: user._id.toString()
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+exports.postNewPassword = (req, res, next) => {
+  //extract values from req.body
+  const newPassword = req.body.password
+  const userId = req.body.userId
+  const passwordToken = req.body.passwordToken
+  let resetUser
+
+//find user
+User.findOne({
+    resetToken: passwordToken,
+    resetTokenExpiration: {$gt: Date.now(),
+    _id: userId}
+  })
+.then(user => {
+  resetUser = user
+  return bcrypt.hash(newPassword, 12)//takes user's pass and ecripted it
+})
+.then(hashedPassword => {
+  resetUser.password = hashedPassword
+  resetUser.resetToken = undefined
+  resetUser.resetTokenExpiration = undefined
+  user.save()
+})
+.then(result => {
+  res.redirect('/login')
+})
+.catch(err => console.log(err))
 };
