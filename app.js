@@ -61,6 +61,12 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
+app.use((req, res, next) => { //for every reques that is executed these two firlds will be set for the views that are rendered
+  res.locals.isAuthenticated = req.session.isLoggedIn,
+  res.locals.csrfToken = req.csrfToken()
+  next()
+})
+
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
