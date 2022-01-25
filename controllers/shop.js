@@ -124,7 +124,15 @@ exports.getOrders = (req, res, next) => {
 
 exports.getInvoice = (req, res, next) => {
   const orderId = req.params.orderId
-  const invoiceName =`invoice-${orderId}.pdf`
+
+  Order.findById(orderId).then(order => {
+    if(!order) {
+      return next(new Error('No order found'))
+    }
+    if(order.user.userId.toString() !== req.user._id.toString()) {
+      return next(new Error('Unauthorized'))
+    }
+    const invoiceName =`invoice-${orderId}.pdf`
   console.log(`invoiceName`, invoiceName)
   const invoicePath = path.join('data', 'invoices', invoiceName)//"data" folder, 'invoice' folder, invoice-name
 
@@ -140,4 +148,8 @@ exports.getInvoice = (req, res, next) => {
     
     res.send(data)
   })
+  
+  }).catch(err => next(err))
+
+  
 };
