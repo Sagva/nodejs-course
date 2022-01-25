@@ -138,6 +138,6 @@ exports.getInvoice = (req, res, next) => {
       'inline; filename="' + invoiceName + '"' //inline opens in a browser, attachment - downloads
     );
     
-    
+    res.send(data)
   })
 };
