@@ -136,19 +136,30 @@ exports.getInvoice = (req, res, next) => {
   console.log(`invoiceName`, invoiceName)
   const invoicePath = path.join('data', 'invoices', invoiceName)//"data" folder, 'invoice' folder, invoice-name
 
-  fs.readFile(invoicePath, (err, data) => {
-    if(err) {
-      return next(err)
-    }
+  //reading file
+  // fs.readFile(invoicePath, (err, data) => {
+  //   if(err) {
+  //     return next(err)
+  //   }
+  //   res.setHeader('Content-Type', 'application/pdf');
+  //   res.setHeader(
+  //     'Content-Disposition',
+  //     'inline; filename="' + invoiceName + '"' //inline opens in a browser, attachment - downloads
+  //   );
+    
+  //   res.send(data)
+  // })
+
+  //streaming response data instead of reading it
+  const file = fs.createReadStream(invoicePath)
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
       'inline; filename="' + invoiceName + '"' //inline opens in a browser, attachment - downloads
     );
-    
-    res.send(data)
-  })
-  
+    file.pipe(res) //Pipe method forward the data to the response, because response object is a writable stream. It is recommended to stream data instead of reading, especially for large files.
+
+
   }).catch(err => next(err))
 
   
