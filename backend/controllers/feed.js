@@ -1,5 +1,17 @@
 exports.getPosts = (req, res, next) => {
-    res.status(200).json({posts: [{title: 'First post', content: 'THis is the first post'}]})// Json is a method provided by expressjs that allows us to conveniently return a response with json data, with the right headers being set.
+    res.status(200).json({posts: [
+        {
+            _id: '1',
+            title: 'First post', 
+            content: 'THis is the first post',
+            imageUrl: 'images/book.png',
+            creator: {
+                name: 'Elena',
+            },
+            createdAt: new Date()
+        }
+    
+    ]})
 }
 exports.createPost = (req, res, next) => {
     const title = req.body.title
