@@ -140,15 +140,36 @@ exports.getInvoice = (req, res, next) => {
   //creating Pdf document instead reading existing one
   const pdfDoc = new PDFDocument(); // this is a readable stream
   res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader(
-        'Content-Disposition',
-        'inline; filename="' + invoiceName + '"'
-      );
-      pdfDoc.pipe(fs.createWriteStream(invoicePath));//we pipe this output into a writable file stream, we pass a path where we want to write it to. THis ensures that the pdf we generate here gets stored on the server and not just serve to the client 
-      pdfDoc.pipe(res); //pipe the output into the response because we want to serve it to the client
+  res.setHeader(
+    'Content-Disposition',
+    'inline; filename="' + invoiceName + '"'
+  );
+  pdfDoc.pipe(fs.createWriteStream(invoicePath));//we pipe this output into a writable file stream, we pass a path where we want to write it to. THis ensures that the pdf we generate here gets stored on the server and not just serve to the client 
+  pdfDoc.pipe(res); //pipe the output into the response because we want to serve it to the client
 
   //now whatever we add to the document will be forwarded into this file that was generated on a fly and into our response
-  pdfDoc.text('Hello world!')
+  pdfDoc.fontSize(26).text('Invoice', { //adding title
+    underline: true
+  })
+
+
+  pdfDoc.text('_______________________')
+  let totalPrice = 0
+  order.products.forEach(prod => {
+    totalPrice += prod.quantity * prod.product.price;
+    pdfDoc
+      .fontSize(14)
+      .text(
+        prod.product.title +
+          ' - ' +
+          prod.quantity +
+          ' x ' +
+          '$' +
+          prod.product.price
+      );
+  });
+  pdfDoc.text('___________');
+  pdfDoc.fontSize(20).text('Total Price: $' + totalPrice);
   pdfDoc.end()
 
   }).catch(err => next(err))
