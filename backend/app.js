@@ -7,7 +7,7 @@ const feedRoutes = require("./routers/feed");
 const app = express();
 
 app.use(bodyParser.json()); // application/json
-app.use("/images", express.static(path.join(__dirname, 'images')));//construct an absolute path to the images folder. that is the folder we'll serve statically for requests going to '/images'
+app.use("/images", express.static(path.join(__dirname, "images"))); //construct an absolute path to the images folder. that is the folder we'll serve statically for requests going to '/images'
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -20,6 +20,13 @@ app.use((req, res, next) => {
 });
 
 app.use("/feed", feedRoutes);
+
+app.use((error, req, res, next) => { //general error handling functionality 
+  console.log(error);
+  const status = error.statusCode || 500;
+  const message = error.message; //this property exists bt default and it holds the message you pass to the constructor of the error object
+  res.status(status).json({message: message});
+});
 
 mongoose
   .connect(
