@@ -24,4 +24,4 @@ const postSchema = new Schema(
   { timeseries: true }
 );
 
-module.exports.exports = mongoose.model('Post', postSchema)
+module.exports = mongoose.model("Post", postSchema);
