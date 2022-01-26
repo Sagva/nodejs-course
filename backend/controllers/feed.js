@@ -3,7 +3,9 @@ const path = require("path");
 
 const { validationResult } = require("express-validator/check");
 const post = require("../models/post");
+
 const Post = require("../models/post");
+const User = require("../models/user");
 
 exports.getPosts = (req, res, next) => {
   //pagination
@@ -20,13 +22,11 @@ exports.getPosts = (req, res, next) => {
     })
     .then((posts) => {
       // console.log(`posts`, posts);
-      res
-        .status(200)
-        .json({
-          message: "Fetched posts successfuly",
-          posts: posts,
-          totalItems: totalItems,
-        });
+      res.status(200).json({
+        message: "Fetched posts successfuly",
+        posts: posts,
+        totalItems: totalItems,
+      });
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -49,27 +49,32 @@ exports.createPost = (req, res, next) => {
     throw error;
   }
   const imageUrl = req.file.path.replace(/\\/g, "/");
-  console.log(`imageUrl`, imageUrl);
   const title = req.body.title;
   const content = req.body.content;
+  let creator;
 
   const post = new Post({
     //create post in db
     title: title,
     content: content,
     imageUrl: imageUrl,
-    creator: {
-      name: "Elena",
-    },
+    creator: req.userId,
   });
   post
     .save()
     .then((result) => {
-      // console.log(`result`, result);
+      return User.findById(req.userId);
+    })
+    .then((user) => {
+      creator = user;
+      user.posts.push(post);
+      return user.save();
+    })
+    .then((result) => {
       res.status(201).json({
-        // 200 - just success, 201 - success, a resource was created
         message: "Post created successfully!",
-        post: result,
+        post: post,
+        creator: { _id: creator._id, name: creator.name },
       });
     })
     .catch((err) => {
@@ -87,6 +92,7 @@ exports.getPost = (req, res, next) => {
 
   //find the post with extructed postId in the DB
   Post.findById(postId)
+    .populate("creator")
     .then((post) => {
       if (!post) {
         //if the post is not found
