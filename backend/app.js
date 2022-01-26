@@ -21,7 +21,7 @@ app.use("/feed", feedRoutes);
 
 mongoose
   .connect(
-    "mongodb+srv://Elena:NODE123456node@cluster0.w6ofb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    "mongodb+srv://Elena:NODE123456node@cluster0.w6ofb.mongodb.net/messages?retryWrites=true&w=majority"
   )
   .then((result) => {
     app.listen(8080);
