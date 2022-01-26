@@ -1,2 +1,4 @@
 node_modules
 /images
+backend/images
+nodemon.json
