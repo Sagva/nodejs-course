@@ -50,7 +50,11 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch("http://localhost:8080/feed/posts?page=" + page)
+    fetch("http://localhost:8080/feed/posts?page=" + page, {
+      headers: {
+        Authorization: "Bearer " + this.props.token, //in the backend app.js the following header should be added: res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      },
+    })
       .then((res) => {
         if (res.status !== 200) {
           throw new Error("Failed to fetch posts.");

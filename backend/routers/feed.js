@@ -2,10 +2,12 @@ const express = require("express");
 const { body } = require("express-validator/check");
 
 const feedController = require("../controllers/feed");
+const isAuth = require("../middleware/is-auth");
+
 const router = express.Router();
 
 // GET /feed/posts - these kind of requests would get handled by this controller
-router.get("/posts", feedController.getPosts);
+router.get("/posts", isAuth, feedController.getPosts); //isAuth is a middleware
 
 router.post(
   "/post",
