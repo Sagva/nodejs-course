@@ -4,7 +4,7 @@ const Post = require("../models/post");
 exports.getPosts = (req, res, next) => {
   Post.find() //fetching actusl posts fron DB
     .then((posts) => {
-      console.log(`posts`, posts);
+      // console.log(`posts`, posts);
       res
         .status(200)
         .json({ message: "Fetched posts successfuly", posts: posts });
@@ -24,6 +24,13 @@ exports.createPost = (req, res, next) => {
     throw error; //it will automatically exit the function execution (of createPost) and instead try to reach the next error handling or err.handling middleware provided in the express application.
   }
 
+  if (!req.file) {
+    const error = new Error("No image provided");
+    error.statusCode = 422;
+    throw error;
+  }
+  const imageUrl = req.file.path.replace(/\\/g, "/");
+  console.log(`imageUrl`, imageUrl);
   const title = req.body.title;
   const content = req.body.content;
 
@@ -31,7 +38,7 @@ exports.createPost = (req, res, next) => {
     //create post in db
     title: title,
     content: content,
-    imageUrl: "images/book.png",
+    imageUrl: imageUrl,
     creator: {
       name: "Elena",
     },
@@ -39,7 +46,7 @@ exports.createPost = (req, res, next) => {
   post
     .save()
     .then((result) => {
-      console.log(`result`, result);
+      // console.log(`result`, result);
       res.status(201).json({
         // 200 - just success, 201 - success, a resource was created
         message: "Post created successfully!",
