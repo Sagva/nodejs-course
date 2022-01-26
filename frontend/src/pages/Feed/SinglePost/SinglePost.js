@@ -14,7 +14,11 @@ class SinglePost extends Component {
 
   componentDidMount() {
     const postId = this.props.match.params.postId;
-    fetch("http://localhost:8080/feed/post/" + postId)
+    fetch("http://localhost:8080/feed/post/" + postId, {
+      headers: {
+        Authorization: "Bearer " + this.props.token, //in the backend app.js the following header should be added: res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      },
+    })
       .then((res) => {
         console.log(`res`, res);
         if (res.status !== 200) {
