@@ -17,13 +17,20 @@ router.post(
 );
 
 router.get("/post/:postId", feedController.getPost);
+
 router.put(
+  //put requests have also body
   "/post/:postId",
   [
     body("title").trim().isLength({ min: 5 }),
     body("content").trim().isLength({ min: 5 }),
   ],
   feedController.updatePost
-); //put requests have also body
+);
+router.delete(
+  //for delete requests we can't send a body
+  "/post/:postId",
+  feedController.deletePost
+);
 
 module.exports = router;

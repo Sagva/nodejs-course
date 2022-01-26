@@ -146,6 +146,33 @@ exports.updatePost = (req, res, next) => {
     });
 };
 
+exports.deletePost = (req, res, next) => {
+  const postId = req.params.postId;
+  Post.findById(postId) //we are not using findAndDelete because we want to check if the user have rights to delete the post (if the user reated it earlier)
+    .then((post) => {
+      if (!post) {
+        //if the post is not found (is undefind)
+        const error = new Error("Could not find post");
+        error.statusCode = 404;
+        throw error;
+      }
+      //check logged in user
+      clearImage(post.imageUrl); //deliting the image
+
+      return Post.findByIdAndRemove(postId);
+    })
+    .then((result) => {
+      console.log(result);
+      res.status(200).json({ message: "Post was deleted!", post: result });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+        next(err);
+      }
+    });
+};
+
 const clearImage = (filePath) => {
   //helping function for deleting images
   filePath = path.join(__dirname, "..", filePath);
