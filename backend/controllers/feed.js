@@ -6,12 +6,27 @@ const post = require("../models/post");
 const Post = require("../models/post");
 
 exports.getPosts = (req, res, next) => {
-  Post.find() //fetching actusl posts fron DB
+  //pagination
+  const currentPage = req.query.page || 1;
+  const perPage = 2;
+  let totalItems;
+  Post.find()
+    .countDocuments()
+    .then((count) => {
+      totalItems = count;
+      return Post.find() //fetching actusl posts fron DB
+        .skip((currentPage - 1) * perPage)
+        .limit(perPage);
+    })
     .then((posts) => {
       // console.log(`posts`, posts);
       res
         .status(200)
-        .json({ message: "Fetched posts successfuly", posts: posts });
+        .json({
+          message: "Fetched posts successfuly",
+          posts: posts,
+          totalItems: totalItems,
+        });
     })
     .catch((err) => {
       if (!err.statusCode) {
