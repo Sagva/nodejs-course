@@ -4,8 +4,8 @@ const nodemailer = require('nodemailer')
 const transport = require("nodemailer-mailgun-transport")
 const mailgun = {   
   auth: {  
-    api_key: "d16f4b4515087dd3e80c9e4fbdd7b25a-054ba6b6-4ff3e7d2",
-    domain: "sandboxbda1b86d22e14501bf65cae0456442c1.mailgun.org",
+    api_key: `${process.env.api_key}`,
+    domain: `${process.env.domain}`,
   }, 
 };
 const {validationResult} = require('express-validator/check')
@@ -147,7 +147,7 @@ exports.postSignup = (req, res, next) => {
           res.redirect('/login');
           return mailgunTransport.sendMail({
             to: email,
-            from: 'sagva2014@gmail.com',
+            from:  `${process.env.from}`,
             subject: 'Sighup succeeded!',
             html: '<h1>You successfuly sighed up!</h1>'
         });
