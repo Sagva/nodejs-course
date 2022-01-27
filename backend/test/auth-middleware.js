@@ -15,4 +15,13 @@ it('should throw an error if no authorization header is present', function() {
     .to.throw('Not authenticated')
 })
 
-//integration test tests more complete flow
+it('should throw an error if the authorizantion header is only obe string', function() {
+    const req = {
+        get: function() {
+            return 'xyz'
+        }
+    }
+
+    expect(authMiddleware.bind(this, {}, ()=> {})).to.throw() //bind does that we are not calling authMiddleware here, but reference to it 
+    // expect(authMiddleware.bind(this, {}, ()=> {})).not.to.throw() //will not pass because it will be error and we are saying that we are not expecting an error
+})
