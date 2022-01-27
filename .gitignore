@@ -2,3 +2,4 @@ node_modules
 /images
 backend/images
 nodemon.json
+shop/access.log

@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require('fs')
 
 const express = require("express");
 const bodyParser = require("body-parser"); //For parsing incoming request bodies 
@@ -10,6 +11,7 @@ const flash = require("connect-flash"); //for providing users feedback, e.g. for
 const multer = require("multer"); //for handling form-data, which is used for uploading files
 const helmet = require("helmet"); // Helmet helps to secure the Express apps by setting various HTTP headers.
 const compression = require('compression') //for compressing assets
+const morgan = require('morgan') // for logging into a file info about requests
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -61,8 +63,12 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),
+ {flags: 'a'}) //{flags: 'a'} - append data to existing file, not overwrite it
+
 app.use(helmet());
 app.use(compression())
+app.use(morgan('combined', {stream: accessLogStream}))
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
