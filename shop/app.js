@@ -9,6 +9,7 @@ const csrf = require("csurf"); // for security. Package allows to generate csrf-
 const flash = require("connect-flash"); //for providing users feedback, e.g. for showing error messages
 const multer = require("multer"); //for handling form-data, which is used for uploading files
 const helmet = require("helmet"); // Helmet helps to secure the Express apps by setting various HTTP headers.
+const compression = require('compression') //for compressing assets
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -61,6 +62,7 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(helmet());
+app.use(compression())
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
