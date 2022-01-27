@@ -1,0 +1,12 @@
+{
+    "env" : {
+        "MONGO_USER": "Elena",
+        "MONGO_PASSWORD": "JljPW4wROYq3gzT9",
+        "MONGO_DEFAULT_DATABASE": "shop",
+        "api_key": "f299c65f94bd83772001d3e976c1d9b4",
+        
+        "domain": "sandboxbda1b86d22e14501bf65cae0456442c1.mailgun.org", 
+        "from": "sagva2014@gmail.com"  
+    }
+}
+
