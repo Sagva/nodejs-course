@@ -36,13 +36,41 @@ describe('Auth Controller - login', function() {
                email: 'test@test.com',
                password: 'tester',
                name: 'test',
-               posts: []
+               posts: [],
+               _id: '5c0f66b979af55031b34728a'
            })
            return user.save()
-           then(()=>{
-               
-           })
-          })
+        })
+        .then(()=>{
+            const req = {userId: '5c0f66b979af55031b34728a'}
+            const res = {
+                statusCode: 500,
+                userStatus: null,
+                status: function(code) {
+                    this.statusCode = code
+                    return this
+                },
+                json: function(data) {
+                    this.userStatus = data.status
+                }
+            }
+
+            AuthController.getUserStatus(req, res, ()=> {})
+            .then(() => {
+                expect(res.statusCode).to.be.equal(200)
+                expect(res.status).to.be.equal("I am new!")
+
+                //cleaning up - deleting cteated user, so we can use same id again
+                User.deleteMany({})
+                .then(()=>{
+                    return mongoose.disconnect()
+                })
+                .then(() => {
+                    done()
+                })
+                
+            })
+        })
         .catch((err) => console.log(err));
     })
 })
