@@ -3,3 +3,5 @@ node_modules
 backend/images
 nodemon.json
 shop/access.log
+shop/server.cert
+shop/server.key
