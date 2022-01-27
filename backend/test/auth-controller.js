@@ -4,6 +4,8 @@ const sinon = require('sinon')
 const User = require('../models/user')
 const AuthController = require('../controllers/auth')
 
+const mongoose = require("mongoose");//for connecting to test dedicated DB
+
 describe('Auth Controller - login', function() {
     it('should throw an error with code 500 if accessing the database fails', function(done) { //done is for testing asyncromous code
         sinon.stub(User, 'findOne')
@@ -24,5 +26,23 @@ describe('Auth Controller - login', function() {
         })
         User.findOne.restore()
 
+    })
+
+    it('Should send a response with a valid user status for an existing user', function(done) {
+        mongoose.connect( "mongodb+srv://Elena:JljPW4wROYq3gzT9@cluster0.w6ofb.mongodb.net/test-messages?retryWrites=true&w=majority")
+        .then((result) => {
+            //creating a dummy user
+           const user = new User({
+               email: 'test@test.com',
+               password: 'tester',
+               name: 'test',
+               posts: []
+           })
+           return user.save()
+           then(()=>{
+               
+           })
+          })
+        .catch((err) => console.log(err));
     })
 })
