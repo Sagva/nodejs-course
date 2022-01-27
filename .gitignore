@@ -22,3 +22,6 @@ yarn-error.log*
 
 
 /backend/images
+node_modules
+/images
+/nodemon.json
