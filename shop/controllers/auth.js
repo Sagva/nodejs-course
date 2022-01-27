@@ -1,6 +1,6 @@
 const crypto = require('crypto');
-const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer')
+const bcrypt = require('bcryptjs'); //package that helps us with encrypting the password
+const nodemailer = require('nodemailer')// for sending letters 
 const transport = require("nodemailer-mailgun-transport")
 const mailgun = {   
   auth: {  

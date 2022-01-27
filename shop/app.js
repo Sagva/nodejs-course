@@ -1,20 +1,20 @@
 const path = require("path");
 
 const express = require("express");
-const bodyParser = require("body-parser");
+const bodyParser = require("body-parser"); //For parsing incoming request bodies 
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
-const csrf = require("csurf");
-const flash = require("connect-flash");
-const multer = require("multer");
+const csrf = require("csurf"); // for security. Package allows to generate csrf-token that we can embed into forms for every request. On the server this package will check if the request has tthe valid token
+const flash = require("connect-flash"); //for providing users feedback, e.g. for showing error messages
+const multer = require("multer"); //for handling form-data, which is used for uploading files
 const helmet = require("helmet"); // Helmet helps to secure the Express apps by setting various HTTP headers.
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.w6ofb.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}`;
-// Elena NODE123456node shop
+
 const app = express();
 
 // Create DB Store
