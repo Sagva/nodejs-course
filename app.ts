@@ -4,8 +4,17 @@ const num1Elem = document.getElementById('num1') as HTMLInputElement
 const num2Elem = document.getElementById('num2') as HTMLInputElement
 const buttonElem = document.querySelector('button')! //! = we know that it's not going to be null
 
-function add(num1: number, num2: number) {
-  return num1 + num2;
+function add(num1: number | string, num2: number | string) {
+  //type guard
+  if(typeof num1 === 'number' && typeof num2 === 'number') {//if we have 2 numbers
+
+    return num1 + num2;
+  }
+  else if(typeof num1 === 'string' && typeof num2 === 'string') { //if we have 2 strings
+
+    return num1 + ' ' + num2;
+  }
+  return +num1 + +num2
 }
 
 if(buttonElem) {
@@ -15,7 +24,10 @@ if(buttonElem) {
     const num2 = num2Elem.value
   
     const result = add(+num1, +num2)
+    const stringResult = add(num1, num2)
     console.log(result)
+    console.log(stringResult)
+    console.log(add(true, false))
   })
 }
 
