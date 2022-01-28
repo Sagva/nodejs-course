@@ -7,7 +7,10 @@ const buttonElem = document.querySelector('button')! //! = we know that it's not
 const numResults: number[] = [] //number[] - array full of numbers
 const stringResults: string[] = []
 
-function add(num1: number | string, num2: number | string) {
+type NumOrString = number | string //Type aliases (custom type) allows you to set up your own type alias so you can give a different type a new name.
+type Result = { val: number; timestamp: Date}
+
+function add(num1: NumOrString, num2: NumOrString) {
   //type guard
   if(typeof num1 === 'number' && typeof num2 === 'number') {//if we have 2 numbers
 
@@ -40,6 +43,6 @@ if(buttonElem) {
   })
 }
 
-function printResult(resultObj: { val: number; timestamp: Date}) {
+function printResult(resultObj: Result) {
   console.log(resultObj.val)
 }
