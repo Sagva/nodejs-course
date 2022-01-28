@@ -4,7 +4,11 @@ const num1Elem = document.getElementById('num1') as HTMLInputElement
 const num2Elem = document.getElementById('num2') as HTMLInputElement
 const buttonElem = document.querySelector('button')! //! = we know that it's not going to be null
 
-const numResults: number[] = [] //number[] - array full of numbers
+//An array is a generic type
+//A generic type simply is a type that interacts with another type, eg. array with another type inside it
+//const numResults: number[] = [] //number[] - array full of numbers same as write:
+const numResults: Array<number> = [] //Array<number> - array full of numbers
+
 const stringResults: string[] = []
 
 type NumOrString = number | string //Type aliases (custom type) allows you to set up your own type alias so you can give a different type a new name.
@@ -14,10 +18,6 @@ interface ResultObject { //Interfaces also allow you to define the structure of 
   val: number; 
   timestamp: Date
 } 
-//Difference between custom type and interface:
-//If you're just defining the structure of an object, you can use either of the two. Interface a bit more common, but must do
-//Interfaces can also be used to force classes to implement certain methods or functionalities
-//if you would add your own class or constructor function, you could use the class name as a type as well,
 
 function add(num1: NumOrString, num2: NumOrString) {
   //type guard
@@ -55,3 +55,19 @@ if(buttonElem) {
 function printResult(resultObj: ResultObject) {
   console.log(resultObj.val)
 }
+
+
+// The promise is a generic type because it eventually resolves to a value,
+// and the value it resolves to, that's the generic type for the promise.
+// For the array, it was the value stored in the array. For the promise, it's the value the promise resolves to.
+//By adding angle brackets after Promise, we can set the type to which promise will resolve to to a string.
+// Generic types give you extra type safety when working with more complex types or types that are simply connected to each other.
+const myPromise = new Promise<string>((resolve, reject) => {
+  setTimeout(() => {
+    resolve('It worked!')
+  }, 1000 )
+})
+
+myPromise.then(result => {
+  console.log(`result:`, result.split('w')) //result: (2) ['It ', 'orked!']
+})

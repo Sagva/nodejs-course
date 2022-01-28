@@ -4,7 +4,10 @@
 const num1Elem = document.getElementById('num1');
 const num2Elem = document.getElementById('num2');
 const buttonElem = document.querySelector('button'); //! = we know that it's not going to be null
-const numResults = []; //number[] - array full of numbers
+//An array is a generic type
+//A generic type simply is a type that interacts with another type, eg. array with another type inside it
+//const numResults: number[] = [] //number[] - array full of numbers same as write:
+const numResults = []; //Array<number> - array full of numbers
 const stringResults = [];
 function add(num1, num2) {
     //type guard
@@ -33,3 +36,15 @@ if (buttonElem) {
 function printResult(resultObj) {
     console.log(resultObj.val);
 }
+// The promise is a generic type because it eventually resolves to a value,
+// and the value it resolves to, that's the generic type for the promise.
+// For the array, it was the value stored in the array. For the promise, it's the value the promise resolves to.
+//By adding angle brackets after Promise, we can set the type to which promise will resolve to to a string.
+const myPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve('It worked!');
+    }, 1000);
+});
+myPromise.then(result => {
+    console.log(`result:`, result.split('w'));
+});
