@@ -10,6 +10,15 @@ const stringResults: string[] = []
 type NumOrString = number | string //Type aliases (custom type) allows you to set up your own type alias so you can give a different type a new name.
 type Result = { val: number; timestamp: Date}
 
+interface ResultObject { //Interfaces also allow you to define the structure of an object
+  val: number; 
+  timestamp: Date
+} 
+//Difference between custom type and interface:
+//If you're just defining the structure of an object, you can use either of the two. Interface a bit more common, but must do
+//Interfaces can also be used to force classes to implement certain methods or functionalities
+//if you would add your own class or constructor function, you could use the class name as a type as well,
+
 function add(num1: NumOrString, num2: NumOrString) {
   //type guard
   if(typeof num1 === 'number' && typeof num2 === 'number') {//if we have 2 numbers
@@ -43,6 +52,6 @@ if(buttonElem) {
   })
 }
 
-function printResult(resultObj: Result) {
+function printResult(resultObj: ResultObject) {
   console.log(resultObj.val)
 }
