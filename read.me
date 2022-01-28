@@ -1,0 +1,13 @@
+npm install -g typescript //command will only work if node js is installed on the pc
+tsc app.ts - command for starting the script => will complile the code to js and insert the app.js file in the root folder
+
+
+tsc --init - command for creating tsconfig.json
+strict mode 
+after adding tsconfig.json, commant for compiling - tsc (no need to add file name), the command will compile all files
+
+on button element error 'Object is possibly 'null' - strict mode in action, the button can be not there
+to fix: 
+option1: exclamation mark in the end = we are sure that it will not be a null
+ const buttonElem = document.querySelector('button')!
+option2: put code in the if-statment
