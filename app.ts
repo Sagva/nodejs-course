@@ -27,10 +27,10 @@ if(buttonElem) {
     const stringResult = add(num1, num2)
     console.log(result)
     console.log(stringResult)
-    console.log(add(true, false))
+    printResult({val: result as number, timestamp: new Date()})
   })
 }
 
-console.log(add(1, 6));
-
-// console.log(add('1', '6')); error , args are strings, func expects numbers
+function printResult(resultObj: { val: number; timestamp: Date}) {
+  console.log(resultObj.val)
+}
