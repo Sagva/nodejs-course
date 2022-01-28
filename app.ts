@@ -4,6 +4,9 @@ const num1Elem = document.getElementById('num1') as HTMLInputElement
 const num2Elem = document.getElementById('num2') as HTMLInputElement
 const buttonElem = document.querySelector('button')! //! = we know that it's not going to be null
 
+const numResults: number[] = [] //number[] - array full of numbers
+const stringResults: string[] = []
+
 function add(num1: number | string, num2: number | string) {
   //type guard
   if(typeof num1 === 'number' && typeof num2 === 'number') {//if we have 2 numbers
@@ -24,10 +27,16 @@ if(buttonElem) {
     const num2 = num2Elem.value
   
     const result = add(+num1, +num2)
+    numResults.push(result as number)
+
     const stringResult = add(num1, num2)
+    stringResults.push(stringResult as string)
+
     console.log(result)
     console.log(stringResult)
     printResult({val: result as number, timestamp: new Date()})
+
+    console.log(numResults, stringResults)
   })
 }
 

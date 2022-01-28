@@ -4,6 +4,8 @@
 const num1Elem = document.getElementById('num1');
 const num2Elem = document.getElementById('num2');
 const buttonElem = document.querySelector('button'); //! = we know that it's not going to be null
+const numResults = []; //number[] - array full of numbers
+const stringResults = [];
 function add(num1, num2) {
     //type guard
     if (typeof num1 === 'number' && typeof num2 === 'number') { //if we have 2 numbers
@@ -19,10 +21,15 @@ if (buttonElem) {
         const num1 = num1Elem.value; //value always returns a string
         const num2 = num2Elem.value;
         const result = add(+num1, +num2);
+        numResults.push(result);
         const stringResult = add(num1, num2);
+        stringResults.push(stringResult);
         console.log(result);
         console.log(stringResult);
+        printResult({ val: result, timestamp: new Date() });
+        console.log(numResults, stringResults);
     });
 }
-console.log(add(1, 6));
-// console.log(add('1', '6')); error , args are strings, func expects numbers
+function printResult(resultObj) {
+    console.log(resultObj.val);
+}
