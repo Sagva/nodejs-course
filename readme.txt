@@ -15,3 +15,5 @@ a certain package or a certain commands
 npm install --save-dev @types/express
 
 comment out "moduleResolution": "node",  in the tsconfig.json
+
+npm install --save-dev body-parser
